@@ -31,3 +31,7 @@
     clear: both;
     background-color: #8A9AF2
 }
+
+#hiddenSection {
+    display: none;
+}
