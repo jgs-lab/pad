@@ -63,15 +63,15 @@
 
 		  $(".loadVideo").click(function(){ // this is the load video function
                 var emotionalVids = [
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/QvD6maGRh7c'></center>",
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/X0eso4ARXzk'></center>",
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/inavo37kSOg'></center>",
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/p_1-VFflpCI'></center>",
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/W8SKL4fniRM'></center>",
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/4N3N1MlvVc4'></center>",
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/sMf2srQ065E'></center>",
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/7usTgw-7XfM'></center>",
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/I5wt302oph0'></center>"
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/QvD6maGRh7c'></center>", // Happy 0
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/X0eso4ARXzk'></center>", // Fun 1
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/HQzd3BIEabM'></center>", // Pleasure 2
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/-eohHwsplvY'></center>", // Calm 3
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/A-BSL5Av89w'></center>", // Sentimental 4
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/4N3N1MlvVc4'></center>", // Sad 5
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/ZpUYjpKg9KY'></center>", // Anger 6
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/FgMn2OJmx3w'></center>", // Scary 7
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/I5wt302oph0'></center>"  // Horror 8
                 ]; // this is the hard coded section of videos pulled from the DEAP viedo Database. 
                 $("#content").html(""); // clears the last video from the content area
 				if($(".videoSelect").val() != -1){
@@ -79,21 +79,10 @@
                     $("#content").append(emotionalVids[$(".videoSelect").val()]);
                 }
 			});
-            /*
-            http://www.youtube.com/watch?v=QvD6maGRh7c Happy
-            http://www.youtube.com/watch?v=X0eso4ARXzk Fun
-            http://www.youtube.com/watch?v=inavo37kSOg Sexy
-            http://www.youtube.com/watch?v=p_1-VFflpCI Calm
-            http://www.youtube.com/watch?v=W8SKL4fniRM Sentimental 
-            http://www.youtube.com/watch?v=4N3N1MlvVc4 Sad  
-            http://www.youtube.com/watch?v=sMf2srQ065E Anger
-            http://www.youtube.com/watch?v=7usTgw-7XfM Scary
-            http://www.youtube.com/watch?v=I5wt302oph0 Horror
-            This is the collection of videos that we are using along with the feeling assosiated with them
-            */		
+            
             function fillTable(){ // function for printing the tables with data out. 
                 $.each(videoData, function(key){
-                    $(".dataTable").append("<tr class="+key+"><td>Video "+key+":</td></tr>");
+                    $(".dataTable").append("<tr class="+key+"><td>Video "+key+"</td></tr>");
                     for(var i = 0; i < this.length; i++){
                         $("."+key).append("<td>"+this[i]+"</td>");
                     }
