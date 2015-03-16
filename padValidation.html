@@ -1,0 +1,41 @@
+<html>
+	<script src="jquery-1.11.1.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="PADStyle.css">
+	<title> PAD Validation </title>
+	<body>
+		<div id="container">
+        	<div id="header">
+        		<p>Header</p>
+    		</div>
+    
+   	 		<div id="primary">
+        		<select class="videoSelect">
+        			<option value="-1">Select a Video</option>
+  					<option value="1">Video 1</option>
+  					<option value="2">Video 2</option>
+  					<option value="3">Video 3</option>
+        		</select>
+        		<button class="loadVideo"> Load Video </button>
+    		</div>
+    
+    		<div id="content">
+        		
+    		</div>
+    
+    		<div id="secondary">
+        		<p>Secondary Sidebar</p>
+    		</div>
+    
+    		<div id="footer">
+        		<p>Footer</p>
+    		</div>
+		</div>
+		<script>
+		
+			$(".loadVideo").click(function(){
+				$("#content").append("<center><embed width='420' height='315' src='http://www.youtube.com/v/XGSy3_Czz8k'></center>");
+			});
+		
+		</script>
+	</body>
+</html>
