@@ -89,6 +89,15 @@
                 });
             }
 
+            $.ajax({
+                url: "interface.php",
+                type: "GET",
+                dataType: "json",
+                success: function(response){
+                    alert(response);
+                }
+            });
+
 		</script>
 	</body>
 </html>
