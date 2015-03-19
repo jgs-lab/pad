@@ -45,11 +45,7 @@
     		</div>
 		</div>
 		<script>
-		  var videoData = {
-            0: [1,2,3,4,5,6,7,8,9],
-            1: [0,1,2,3,4,5,6,7,8],
-            2: [9,0,1,2,3,4,5,6,7]
-          }; // harcoded for testing will be gone. 
+		  var videoData = {}; // harcoded for testing will be gone. 
           var currVideo;
 
           $(".adminButton").click(function(){ // this is the admin login function
@@ -77,6 +73,7 @@
 				if($(".videoSelect").val() != -1){
                     currVideo = $(".videoSelect").val(); // this will be used as the key for the videoData object. 
                     $("#content").append(emotionalVids[$(".videoSelect").val()]);
+                    alert("testing"); // will be replaced by function to start video and begon the ajax calls.
                 }
 			});
             
