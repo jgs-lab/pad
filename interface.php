@@ -9,8 +9,12 @@
 	if(socket_connect($sock, $host, $port))
 	{
 		$input = "";
-		socket_recv($sock, $input, 64, MSG_WAITALL);
-		echo $input;
+		socket_recv($sock, $input, 32, MSG_WAITALL);
+		echo json_encode($input);
+		socket_close($sock);
+	}else{
+
+		echo json_encode("Unable to connect to socket");
 		socket_close($sock);
 	}
 ?>

@@ -58,30 +58,32 @@
           });
 
 		  $(".loadVideo").click(function(){ // this is the load video function
-                $.ajax({
-                    url: "interface.php",
-                    type: "GET",
-                    dataType: "json",
-                    success: function(response){
-                        alert(response);
-                    }
-                });
                 var emotionalVids = [
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/QvD6maGRh7c'></center>", // Happy 0
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/X0eso4ARXzk'></center>", // Fun 1
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/HQzd3BIEabM'></center>", // Pleasure 2
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/-eohHwsplvY'></center>", // Calm 3
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/A-BSL5Av89w'></center>", // Sentimental 4
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/4N3N1MlvVc4'></center>", // Sad 5
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/ZpUYjpKg9KY'></center>", // Anger 6
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/FgMn2OJmx3w'></center>", // Scary 7
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/I5wt302oph0'></center>"  // Horror 8
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/QvD6maGRh7c?autoplay=1'></center>", // Happy 0
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/X0eso4ARXzk?autoplay=1'></center>", // Fun 1
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/HQzd3BIEabM?autoplay=1'></center>", // Pleasure 2
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/-eohHwsplvY?autoplay=1'></center>", // Calm 3
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/A-BSL5Av89w?autoplay=1'></center>", // Sentimental 4
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/4N3N1MlvVc4?autoplay=1'></center>", // Sad 5
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/ZpUYjpKg9KY?autoplay=1'></center>", // Anger 6
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/FgMn2OJmx3w?autoplay=1'></center>", // Scary 7
+                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/I5wt302oph0?autoplay=1'></center>"  // Horror 8
                 ]; // this is the hard coded section of videos pulled from the DEAP viedo Database. 
                 $("#content").html(""); // clears the last video from the content area
 				if($(".videoSelect").val() != -1){
                     currVideo = $(".videoSelect").val(); // this will be used as the key for the videoData object. 
                     $("#content").append(emotionalVids[$(".videoSelect").val()]);
-                    alert("testing"); // will be replaced by function to start video and begon the ajax calls.
+                    
+                    setInterval(function(){
+                        $.ajax({
+                            url: "interface.php",
+                            type: "GET",
+                            dataType: "json",
+                            success: function(response){
+                                console.log(response);
+                            }
+                        });
+                    }, 2000);
                 }
 			});
             
