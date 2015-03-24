@@ -23,6 +23,11 @@
                     <option value="8">Video 8</option>
         		</select>
         		<button class="loadVideo"> Load Video </button>
+                <div>
+                    <button class="vidStop">
+                        Press when Video Stops
+                    </button>
+                </div>
     		</div>
     
     		<div id="content">
@@ -45,8 +50,19 @@
     		</div>
 		</div>
 		<script>
-		  var videoData = {}; // harcoded for testing will be gone. 
-          var currVideo;
+		  var videoData = {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+            6: [],
+            7: [],
+            8: []
+          }; // harcoded for testing will be gone. 
+          var currVideo; // is the current video selected
+          var stop = false; // variable that will stop the stream of information from the sensors 
 
           $(".adminButton").click(function(){ // this is the admin login function
                 if($(".adminInput").val() == "admin1"){
@@ -73,19 +89,28 @@
 				if($(".videoSelect").val() != -1){
                     currVideo = $(".videoSelect").val(); // this will be used as the key for the videoData object. 
                     $("#content").append(emotionalVids[$(".videoSelect").val()]);
-                    
-                    setInterval(function(){
+                     stop = true; 
+                    var ajaxInterval = setInterval(function(){
                         $.ajax({
                             url: "interface.php",
                             type: "GET",
                             dataType: "json",
                             success: function(response){
-                                console.log(response);
+                                //console.log(response);
+                                videoData[currVideo].push(response);
+                                console.log(videoData);
+                                if(stop == false){
+                                    clearInterval(ajaxInterval);
+                                }
                             }
                         });
                     }, 2000);
                 }
 			});
+
+            $(".vidStop").click(function(){
+                stop = false;
+            });
             
             function fillTable(){ // function for printing the tables with data out. 
                 $.each(videoData, function(key){

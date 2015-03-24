@@ -9,7 +9,7 @@
 	if(socket_connect($sock, $host, $port))
 	{
 		$input = "";
-		socket_recv($sock, $input, 32, MSG_WAITALL);
+		socket_recv($sock, $input, 33, MSG_WAITALL);
 		echo json_encode($input);
 		socket_close($sock);
 	}else{
