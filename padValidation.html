@@ -43,6 +43,7 @@
     		<div id="footer">
         		<div id="hiddenSection">
                     <center><p>Data Tables</p></center>
+                    <button class="csv"> Download as CSV</button>
                     <table class="dataTable" border="1">
 
                     </table>
@@ -75,41 +76,45 @@
 
 		  $(".loadVideo").click(function(){ // this is the load video function
                 var emotionalVids = [
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/QvD6maGRh7c?autoplay=1'></center>", // Happy 0
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/X0eso4ARXzk?autoplay=1'></center>", // Fun 1
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/HQzd3BIEabM?autoplay=1'></center>", // Pleasure 2
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/-eohHwsplvY?autoplay=1'></center>", // Calm 3
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/A-BSL5Av89w?autoplay=1'></center>", // Sentimental 4
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/4N3N1MlvVc4?autoplay=1'></center>", // Sad 5
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/ZpUYjpKg9KY?autoplay=1'></center>", // Anger 6
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/FgMn2OJmx3w?autoplay=1'></center>", // Scary 7
-                    "<center><embed width='460' height='330' src='http://www.youtube.com/v/I5wt302oph0?autoplay=1'></center>"  // Horror 8
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/QvD6maGRh7c?autoplay=1'></iframe></center>", // Happy 0
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/X0eso4ARXzk?autoplay=1'></iframe></center>", // Fun 1
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/HQzd3BIEabM?autoplay=1'></iframe></center>", // Pleasure 2
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/-eohHwsplvY?autoplay=1'></iframe></center>", // Calm 3
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/A-BSL5Av89w?autoplay=1'></iframe></center>", // Sentimental 4
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/4N3N1MlvVc4?autoplay=1'></iframe></center>", // Sad 5
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/ZpUYjpKg9KY?autoplay=1'></iframe></center>", // Anger 6
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/FgMn2OJmx3w?autoplay=1'></iframe></center>", // Scary 7
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/I5wt302oph0?autoplay=1'></iframe></center>"  // Horror 8
                 ]; // this is the hard coded section of videos pulled from the DEAP viedo Database. 
                 $("#content").html(""); // clears the last video from the content area
 				if($(".videoSelect").val() != -1){
                     currVideo = $(".videoSelect").val(); // this will be used as the key for the videoData object. 
                     $("#content").append(emotionalVids[$(".videoSelect").val()]);
-                     stop = true; 
+                     stop = true; // let the ajax call happen on intervals
                     var ajaxInterval = setInterval(function(){
                         $.ajax({
-                            url: "interface.php",
-                            type: "GET",
-                            dataType: "json",
-                            success: function(response){
+                            url: "interface.php", // calling the interface I made
+                            type: "GET", // it is a GET 
+                            dataType: "json", // data getting back will be a json
+                            success: function(response){ // function with the response data
                                 //console.log(response);
-                                videoData[currVideo].push(response);
-                                console.log(videoData);
-                                if(stop == false){
+                                videoData[currVideo].push(response); // push the data onto the the current vido key on vidoData OBJ
+                                //console.log(videoData); //for debugging
+                                if(stop == false){ // if stop is set to false stop the interval repeating.
                                     clearInterval(ajaxInterval);
                                 }
                             }
                         });
-                    }, 2000);
+                    }, 2000); // repeate the interval every 2 seconds
                 }
 			});
 
-            $(".vidStop").click(function(){
+            $(".vidStop").click(function(){ // button function to stop the ajax calls when the video is done.
                 stop = false;
+            });
+
+            $(".csv").click(function(){ //button to download the data as CSV
+               window.open("interface.php?action="+JSON.stringify(videoData));
             });
             
             function fillTable(){ // function for printing the tables with data out. 
