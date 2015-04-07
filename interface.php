@@ -4,7 +4,7 @@
 	//the port being read
 	$port = 7474;
 	//create the socket
-	$action = $_GET["action"];
+	$action = $_POST["action"];
 	if(!$action)
 	{
 		$sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -15,8 +15,7 @@
 			echo json_encode($input);
 			socket_close($sock);
 		}else{
-
-			echo json_encode("Unable to connect to socket");
+			echo json_encode(socket_strerror(socket_last_error($sock)));
 			socket_close($sock);
 		}
 	}else
@@ -25,11 +24,12 @@
 		header('Content-Disposition: attachment; filename=data.csv');
 		$output = fopen('php://output', 'w');
 		$stuff = json_decode($action);
-		$i = array("video",0); //video counter
+		$vidNum = 0;
 		foreach ($stuff as $key => $value) {
+			$i = array("video" . $vidNum); //video counter
 			fputcsv($output, $i); //adds the video title
 			fputcsv($output, $value); // adds the  data
-			$i[1]++; // increments to the next video.
+			$vidNum++; // increments to the next video.
 		}
 	}
 ?>
