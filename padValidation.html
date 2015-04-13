@@ -20,7 +20,6 @@
                     <option value="5">Video 5</option>
                     <option value="6">Video 6</option>
                     <option value="7">Video 7</option>
-                    <option value="8">Video 8</option>
         		</select>
         		<button class="loadVideo"> Load Video </button>
                 <div>
@@ -76,15 +75,14 @@
 
 		  $(".loadVideo").click(function(){ // this is the load video function
                 var emotionalVids = [
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/QvD6maGRh7c?autoplay=1'></iframe></center>", // Happy 0
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/X0eso4ARXzk?autoplay=1'></iframe></center>", // Fun 1
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/HQzd3BIEabM?autoplay=1'></iframe></center>", // Pleasure 2
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/-eohHwsplvY?autoplay=1'></iframe></center>", // Calm 3
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/A-BSL5Av89w?autoplay=1'></iframe></center>", // Sentimental 4
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/4N3N1MlvVc4?autoplay=1'></iframe></center>", // Sad 5
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/ZpUYjpKg9KY?autoplay=1'></iframe></center>", // Anger 6
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/FgMn2OJmx3w?autoplay=1'></iframe></center>", // Scary 7
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/I5wt302oph0?autoplay=1'></iframe></center>"  // Horror 8
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/iZ9vkd7Rp-g?autoplay=1'></iframe></center>", // Fun 0
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/51ncDQYxsm8?autoplay=1'></iframe></center>", // Exciting 1
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/DqpFMqfeltE?autoplay=1'></iframe></center>", // Sexy 2
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/B8eI64H1Cqk?autoplay=1'></iframe></center>", // Lovely 3
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/4N3N1MlvVc4?autoplay=1'></iframe></center>", // Sad 4
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/O0yoxveh7Tg?autoplay=1'></iframe></center>", // Terrible 5
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/HdH8NYsDwWk?autoplay=1'></iframe></center>", // Hate 6
+                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/wVyggTKDcOE?autoplay=1'></iframe></center>" // Sad 7
                 ]; // this is the hard coded section of videos pulled from the DEAP viedo Database. 
                 $("#content").html(""); // clears the last video from the content area
 				if($(".videoSelect").val() != -1){
