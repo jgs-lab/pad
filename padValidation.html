@@ -75,14 +75,14 @@
 
 		  $(".loadVideo").click(function(){ // this is the load video function
                 var emotionalVids = [
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/iZ9vkd7Rp-g?autoplay=1'></iframe></center>", // Fun 0
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/51ncDQYxsm8?autoplay=1'></iframe></center>", // Exciting 1
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/DqpFMqfeltE?autoplay=1'></iframe></center>", // Sexy 2
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/B8eI64H1Cqk?autoplay=1'></iframe></center>", // Lovely 3
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/4N3N1MlvVc4?autoplay=1'></iframe></center>", // Sad 4
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/O0yoxveh7Tg?autoplay=1'></iframe></center>", // Terrible 5
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/HdH8NYsDwWk?autoplay=1'></iframe></center>", // Hate 6
-                    "<center><iframe width='460' height='330' src='http://www.youtube.com/v/wVyggTKDcOE?autoplay=1'></iframe></center>" // Sad 7
+                    "<center><iframe width='100%' height='100%' src='http://www.youtube.com/v/iZ9vkd7Rp-g?autoplay=1'></iframe></center>", // Fun 0
+                    "<center><iframe width='100%' height='100%' src='http://www.youtube.com/v/51ncDQYxsm8?autoplay=1'></iframe></center>", // Exciting 1
+                    "<center><iframe width='100%' height='100%' src='http://www.youtube.com/v/DqpFMqfeltE?autoplay=1'></iframe></center>", // Sexy 2
+                    "<center><iframe width='100%' height='100%' src='http://www.youtube.com/v/B8eI64H1Cqk?autoplay=1'></iframe></center>", // Lovely 3
+                    "<center><iframe width='100%' height='100%' src='http://www.youtube.com/v/4N3N1MlvVc4?autoplay=1'></iframe></center>", // Sad 4
+                    "<center><iframe width='100%' height='100%' src='http://www.youtube.com/v/O0yoxveh7Tg?autoplay=1'></iframe></center>", // Terrible 5
+                    "<center><iframe width='100%' height='100%' src='http://www.youtube.com/v/HdH8NYsDwWk?autoplay=1'></iframe></center>", // Hate 6
+                    "<center><iframe width='100%' height='100%'s src='http://www.youtube.com/v/wVyggTKDcOE?autoplay=1'></iframe></center>" // Sad 7
                 ]; // this is the hard coded section of videos pulled from the DEAP viedo Database. 
                 $("#content").html(""); // clears the last video from the content area
 				if($(".videoSelect").val() != -1){
@@ -92,6 +92,9 @@
                     var ajaxInterval = setInterval(function(){
                         $.ajax({
                             url: "interface.php", // calling the interface I made
+                            data: {
+                                action: "false"
+                            },
                             type: "POST", // it is a GET 
                             dataType: "json", // data getting back will be a json
                             success: function(response){ // function with the response data

@@ -5,7 +5,7 @@
 	$port = 7474;
 	//create the socket
 	$action = $_POST["action"];
-	if(!$action)
+	if($action == "false")
 	{
 		$sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 		if(socket_connect($sock, $host, $port))
