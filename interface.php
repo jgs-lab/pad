@@ -29,8 +29,9 @@
 			$i = array("video" . $vidNum); //video counter
 			foreach($value as $val){
 				$temp = explode(',', $val);
-				fputcsv($output, $i); //adds the video title
-				fputcsv($output, $temp); // adds the  data
+				$full_array = array_merge($i, $temp);
+				//fputcsv($output, $i); //adds the video title
+				fputcsv($output, $full_array); // adds the  data
 			}
 			$vidNum++; // increments to the next video.
 		}
