@@ -65,6 +65,7 @@
           var stop = false; // variable that will stop the stream of information from the sensors 
 
           $(".adminButton").click(function(){ // this is the admin login function
+                console.log(videoData);
                 if($(".adminInput").val() == "admin1"){
                     $("#hiddenSection").show();
                     fillTable();
