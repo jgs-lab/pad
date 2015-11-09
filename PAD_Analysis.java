@@ -7,11 +7,17 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class PAD_Analysis
 {
+    
+    //static CSVReader reader = null;
     
     public static void main(String[] args)
     {
@@ -45,6 +51,11 @@ public class PAD_Analysis
         Double tempMag2 = 0d;
         Double cosSim = 0d;
         
+        ////
+        List videoResults = new ArrayList();
+        List total = new ArrayList();
+        
+        
         try
         {
             //Reads in all video data (expected values and video times)
@@ -66,6 +77,12 @@ public class PAD_Analysis
             ratioSTDEV = new Double[vidCount][3];
             testAVG = new Double[vidCount][3];
             testSTDEV = new Double[vidCount][3];
+            
+            for(int i = 0; i < vidCount; i++)
+            {
+                TreeMap<String, Double[]> tmap = new TreeMap<String, Double[]>();
+                videoResults.add(tmap);
+            }
             
             //Now we can save/typecast all of the data into three arrays
             //times for each videos time
@@ -389,8 +406,81 @@ public class PAD_Analysis
                 
                 //Once we finish writing calculated values, we close the writer
                 writer.close();
+                
+                //
+                for(int i = 0; i < 5; i++)
+                {
+                    //
+                    Double[] tempVidResults = new Double[11];
+                    
+                    //
+                    String testName = (tests[j].getName());
+                    tempVidResults[0] = testAVG[i][0];
+                    tempVidResults[1] = testAVG[i][1];
+                    tempVidResults[2] = testAVG[i][2];
+                    tempVidResults[3] = testSTDEV[i][0];
+                    tempVidResults[4] = testSTDEV[i][1];
+                    tempVidResults[5] = testSTDEV[i][2];
+                    tempVidResults[6] = simAVG[i];
+                    tempVidResults[7] = simSTDEV[i];
+                    tempVidResults[8] = ratioSTDEV[i][0];
+                    tempVidResults[9] = ratioSTDEV[i][1];
+                    tempVidResults[10] = ratioSTDEV[i][2];
+                    
+                    //
+                    TreeMap<String, Double[]> currentVidTree = (TreeMap<String, Double[]>)videoResults.get(i);
+                    currentVidTree.put(testName, tempVidResults);
+                    videoResults.set(i, currentVidTree);
+                }
             }
             ////END LOOP ALL TEST FILES CHECKED////
+            
+            ////SAVING VIDEO RESULT FILES////
+            
+            for(int i = 0; i < 5; i++)
+            {
+                //Creates the csv writer with a file writer
+                //file writer creates file in results folder using video name
+                writer = new CSVWriter(new FileWriter(".\\Results\\Video_" + i + ".csv"));
+                
+                //This sets up the first row of the csv, column headers
+                //Then it writes it to the file
+                record = "Test Name,Avg P,Avg A,Avg D,Stdev P,Stdev A,Stdev D,Avg Sim,Stdev Sim,Stdev Ratio P,Stdev Ratio A,Stdev Ratio D".split(",");
+                writer.writeNext(record);
+                
+                //
+                TreeMap<String, Double[]> currentVidTree = (TreeMap<String, Double[]>)videoResults.get(i);
+                
+                //
+                Set set = currentVidTree.entrySet();
+                Iterator iterator = set.iterator();
+                
+                //
+                while(iterator.hasNext())
+                {
+                    //
+                    Map.Entry vidRes = (Map.Entry)iterator.next();
+                    
+                    //
+                    line = (vidRes.getKey() + ",");
+                    
+                    Double[] tempD = (Double[])vidRes.getValue();
+                    
+                    //
+                    line += tempD[0] + "," + tempD[1] + "," + tempD[2] + ",";
+                    line += tempD[3] + "," + tempD[4] + "," + tempD[5] + ",";
+                    line += tempD[6] + "," + tempD[7] + ",";
+                    line += tempD[8] + "," + tempD[9] + "," + tempD[10];
+                    
+                    //
+                    record = line.split(",");
+                    writer.writeNext(record);
+                }
+                
+                //Once we finish writing calculated values, we close the writer
+                writer.close();
+            }
+            ////FINISHED SAVING VIDEO RESULTS////
         }
         catch(FileNotFoundException e)
         {
