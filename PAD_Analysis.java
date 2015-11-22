@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -50,10 +51,18 @@ public class PAD_Analysis
         Double tempMag1 = 0d;
         Double tempMag2 = 0d;
         Double cosSim = 0d;
+        Double[] tempVidAvgs = new Double[11];
+        Double[] videoAVG_AVG = new Double[3];
+        Double[] videoSTDEV_AVG = new Double[3];
+        Double videoAVGSim_AVG = 0d;
+        Double videoSTDEVSim_AVG = 0d;
+        Double[] videoSTDEVRatio_AVG = new Double[3];
+        Double videoAVGSim = 0d;
+        Double videoSTDEVSim = 0d;
         
         ////
-        List videoResults = new ArrayList();
-        List total = new ArrayList();
+        List allTestResultsByVideo = new ArrayList();
+        List allVideoResults = new ArrayList();
         
         
         try
@@ -80,8 +89,8 @@ public class PAD_Analysis
             
             for(int i = 0; i < vidCount; i++)
             {
-                TreeMap<String, Double[]> tmap = new TreeMap<String, Double[]>();
-                videoResults.add(tmap);
+                TreeMap<String, ArrayList> tmap = new TreeMap<String, ArrayList>();
+                allTestResultsByVideo.add(tmap);
             }
             
             //Now we can save/typecast all of the data into three arrays
@@ -94,9 +103,9 @@ public class PAD_Analysis
                 times[currentVid] = Double.parseDouble(row[1]);
                 
                 //Saves the current videos expected averages (P, D, and A)
-                expAVG[currentVid][0] = Double.parseDouble(row[2]);
-                expAVG[currentVid][1] = Double.parseDouble(row[3]);
-                expAVG[currentVid][2] = Double.parseDouble(row[4]);
+                expAVG[currentVid][0] = transformRange(Double.parseDouble(row[2]));
+                expAVG[currentVid][1] = transformRange(Double.parseDouble(row[3]));
+                expAVG[currentVid][2] = transformRange(Double.parseDouble(row[4]));
                 
                 //Saves the current videos expected Std Devs (P, D, and A)
                 expSTDEV[currentVid][0] = Double.parseDouble(row[5]);
@@ -265,7 +274,8 @@ public class PAD_Analysis
                 ////FIND SIMILARITY OF AVG////
                 //Similarity values will all be between 0.0 and 1.0
                 //Can be read as precentage of similarity (0 = 0%, 1 = 100%)
-                for (int i = 0; i < 5; i++) //testAVG.length
+                /*
+                for (int i = 0; i < 8; i++) //testAVG.length
                 {
                     //DOT prouct between Video i test vector and expected vector
                     tempDOT += (testAVG[i][0] * expAVG[i][0]);
@@ -304,12 +314,18 @@ public class PAD_Analysis
                     tempMag2 = 0d;
                     cosSim = 0d;
                 }
+                */
+                for (int i = 0; i < 8; i++)
+                {
+                    simAVG[i] = cosSimularity(testAVG[i], expAVG[i], true);
+                }
                 ////End of average similarity computation////
 
                 ////FIND SIMILARITY OF STDEV////
                 //Similarity values will all be between 0.0 and 1.0
                 //Can be read as precentage of similarity (0 = 0%, 1 = 100%)
-                for (int i = 0; i < 5; i++) //testSTDEV.length
+                /*
+                for (int i = 0; i < 8; i++) //testSTDEV.length
                 {
                     //DOT prouct between Video i test vector and expected vector
                     tempDOT += testSTDEV[i][0] * expSTDEV[i][0];
@@ -337,7 +353,8 @@ public class PAD_Analysis
 
                     //Angular vector similarity of cosSim found above
                     //It is the normilized angle between vectors bounded by [0,1]
-                    //Given by 1 - cos^-1(cosSim)/Pi
+                    //Given by 1 - (2 * cos^-1(cosSim))/Pi
+                    //(multiplied by 2 because no negitive values)
                     //We round to 5 decimal places (might change to BigDecimal)
                     simSTDEV[i] = 1 - ((2 * Math.acos(cosSim)) / Math.PI);
                     simSTDEV[i] = (double) Math.round(simSTDEV[i] * 100000d) / 100000d;
@@ -348,6 +365,11 @@ public class PAD_Analysis
                     tempMag2 = 0d;
                     cosSim = 0d;
                 }
+                */
+                for (int i = 0; i < 8; i++)
+                {
+                    simSTDEV[i] = cosSimularity(testSTDEV[i], expSTDEV[i], false);
+                }
                 ////End of std dev similarity computation////
 
                 ////FIND RATIO OF STDEV////
@@ -355,7 +377,7 @@ public class PAD_Analysis
                 //<1.0 is less spread out, >1.0 is more spread out, 1.0 is as spread out
                 //0.0 means expected/actual Std Dev is 0 (NaN division result)
                 //0.0 is not probable to happen
-                for (int i = 0; i < 5; i++) //testSTDEV.length
+                for (int i = 0; i < 8; i++) //testSTDEV.length
                 {
                     //Ratio between std dev values of test and expected vectors
                     //We round to 5 decimal places (might change to BigDecimal)
@@ -376,7 +398,7 @@ public class PAD_Analysis
                 //System.out.println(Arrays.toString(ratioSTDEV[0]));
                 //System.out.println();
                 
-                ////SAVING TEST CALCULATIONS////
+                ////SAVING TEST RESULTS BY TEST////
                 //Creates the csv writer with a file writer
                 //file writer creates file in results folder using test name
                 writer = new CSVWriter(new FileWriter(".\\Results\\Analysis_" + tests[j].getName()));
@@ -388,7 +410,7 @@ public class PAD_Analysis
                 
                 //This loop creates one row for each video read in, and writes
                 //all calculated values to it, in the same order as headers
-                for(int i = 0; i < 5; i++) //length
+                for(int i = 0; i < 8; i++) //length
                 {
                     //
                     line = ("Video" + i + ",");
@@ -406,9 +428,11 @@ public class PAD_Analysis
                 
                 //Once we finish writing calculated values, we close the writer
                 writer.close();
+                ////FINISHED SAVING TEST RESULTS BY TEST////
                 
-                //
-                for(int i = 0; i < 5; i++)
+                //Here we store the test results by video
+                /*
+                for(int i = 0; i < 8; i++) //length
                 {
                     //
                     Double[] tempVidResults = new Double[11];
@@ -432,12 +456,20 @@ public class PAD_Analysis
                     currentVidTree.put(testName, tempVidResults);
                     videoResults.set(i, currentVidTree);
                 }
+                */
+                for(int i = 0; i < 8; i++) //length
+                {
+                    //
+                    TreeMap<String, ArrayList> videoResults = (TreeMap<String, ArrayList>)allTestResultsByVideo.get(i);
+                    videoResults.put(tests[j].getName(), storeByVideo(testAVG[i], testSTDEV[i], simAVG[i], simSTDEV[i], ratioSTDEV[i]));
+                    allTestResultsByVideo.set(i, videoResults);
+                }
             }
-            ////END LOOP ALL TEST FILES CHECKED////
+            ////END FILE LOOP ALL TEST FILES CHECKED////
             
-            ////SAVING VIDEO RESULT FILES////
-            
-            for(int i = 0; i < 5; i++)
+            ////SAVING TEST RESULTS BY VIDEO////
+            /*
+            for(int i = 0; i < 8; i++)  //length
             {
                 //Creates the csv writer with a file writer
                 //file writer creates file in results folder using video name
@@ -480,7 +512,130 @@ public class PAD_Analysis
                 //Once we finish writing calculated values, we close the writer
                 writer.close();
             }
-            ////FINISHED SAVING VIDEO RESULTS////
+            */
+            for(int i = 0; i < 8; i++)  //length
+            {
+                //Creates the csv writer with a file writer
+                //file writer creates file in results folder using video name
+                writer = new CSVWriter(new FileWriter(".\\Results\\Video_" + i + ".csv"));
+                
+                //This sets up the first row of the csv, column headers
+                //Then it writes it to the file
+                record = "Test Name,Avg P,Avg A,Avg D,Stdev P,Stdev A,Stdev D,Avg Sim,Stdev Sim,Stdev Ratio P,Stdev Ratio A,Stdev Ratio D".split(",");
+                writer.writeNext(record);
+                
+                //
+                TreeMap<String, ArrayList> videoResult = (TreeMap<String, ArrayList>)allTestResultsByVideo.get(i);
+                
+                //
+                Set set = videoResult.entrySet();
+                Iterator iterator = set.iterator();
+                
+                //
+                while(iterator.hasNext())
+                {
+                    //
+                    Map.Entry resultEntry = (Map.Entry)iterator.next();
+                    
+                    //
+                    line = (resultEntry.getKey() + ",");
+                    
+                    ArrayList data = (ArrayList)resultEntry.getValue();
+                    
+                    Double[] dataAVG, dataSTDEV, dataRatioSTDEV;
+                    Double dataSimAVG, dataSimSTDEV;
+                    
+                    dataAVG = (Double[])data.get(0);
+                    dataSTDEV = (Double[])data.get(1);
+                    dataSimAVG = (Double)data.get(2);
+                    dataSimSTDEV = (Double)data.get(3);
+                    dataRatioSTDEV = (Double[])data.get(4);
+                    
+                    //
+                    line += dataAVG[0] + "," + dataAVG[1] + "," + dataAVG[2] + ",";
+                    line += dataSTDEV[0] + "," + dataSTDEV[1] + "," + dataSTDEV[2] + ",";
+                    line += dataSimAVG + "," + dataSimSTDEV + ",";
+                    line += dataRatioSTDEV[0] + "," + dataRatioSTDEV[1] + "," + dataRatioSTDEV[2];
+                    
+                    //
+                    record = line.split(",");
+                    writer.writeNext(record);
+                }
+                
+                //Once we finish writing calculated values, we close the writer
+                writer.close();
+            }
+            ////FINISHED SAVING TEST RESULTS BY VIDEO////
+            
+            ////CALCULATING VIDEO RESULTS////
+            for(int i = 0; i < 8; i++)  //length
+            {
+                ArrayList videoResult = new ArrayList();
+                
+                tempVidAvgs = findAverages((TreeMap<String, ArrayList>)allTestResultsByVideo.get(i));
+                
+                //Originaly split tempVidAvgs into 7 parts (3 Double[] and 4 Double):
+                //AVG AVG_PAD, AVG STDEV_PAD, AVG AVGSim, AVG STDEVSim, AVG STDEVRatio_PAD, AVGSim, and STDEVSim
+                //To avoid problem with Double[]s being mutable and setting ALL thier values to the last set of values
+                //It was changed so I create new Double[]s directly from tempVidAvgs[] with no in between Doduble[] variables
+                
+                videoAVGSim = cosSimularity(new Double[]{tempVidAvgs[0],tempVidAvgs[1],tempVidAvgs[2]}, expAVG[i], true);
+                videoSTDEVSim = cosSimularity(new Double[]{tempVidAvgs[3],tempVidAvgs[4],tempVidAvgs[5]}, expSTDEV[i], false);
+                
+                videoResult.add(new Double[]{tempVidAvgs[0], tempVidAvgs[1], tempVidAvgs[2]});
+                videoResult.add(new Double[]{tempVidAvgs[3],tempVidAvgs[4],tempVidAvgs[5]});
+                videoResult.add(tempVidAvgs[6]);
+                videoResult.add(tempVidAvgs[7]);
+                videoResult.add(new Double[]{tempVidAvgs[8],tempVidAvgs[9],tempVidAvgs[10]});
+                videoResult.add(videoAVGSim);
+                videoResult.add(videoSTDEVSim);
+                
+                allVideoResults.add(videoResult);
+            }
+            ////FINNISHED CALCULATING VIDEO RESULTS////
+            
+            ////SAVING VIDEO RESULTS////
+            
+            //Creates the csv writer with a file writer
+            //file writer creates file in results folder using video name
+            writer = new CSVWriter(new FileWriter(".\\Results\\Video_Results.csv"));
+            
+            //This sets up the first row of the csv, column headers
+            //Then it writes it to the file
+            record = "Video,Avg Avg P,Avg Avg A,Avg Avg D,Avg Stdev P,Avg Stdev A,Avg Stdev D,Avg Avg Sim,Avg Stdev Sim,Avg Stdev Ratio P,Avg Stdev Ratio A,Avg Stdev Ratio D,Sim of Avg Avg,Sim of Avg Stdev".split(",");
+            writer.writeNext(record);
+
+            for(int i = 0; i < 8; i++)  //length
+            {
+                ArrayList data = (ArrayList)allVideoResults.get(i);
+
+                videoAVG_AVG = (Double[])data.get(0);
+                videoSTDEV_AVG = (Double[])data.get(1);
+                videoAVGSim_AVG = (Double)data.get(2);
+                videoSTDEVSim_AVG = (Double)data.get(3);
+                videoSTDEVRatio_AVG = (Double[])data.get(4);
+                videoAVGSim = (Double)data.get(5);
+                videoSTDEVSim = (Double)data.get(6);
+                
+                //
+                line = (i + ",");
+                
+                //
+                line += videoAVG_AVG[0] + "," + videoAVG_AVG[1] + "," + videoAVG_AVG[2] + ",";
+                line += videoSTDEV_AVG[0] + "," + videoSTDEV_AVG[1] + "," + videoSTDEV_AVG[2] + ",";
+                line += videoAVGSim_AVG + "," + videoSTDEVSim_AVG + ",";
+                line += videoSTDEVRatio_AVG[0] + "," + videoSTDEVRatio_AVG[1] + "," + videoSTDEVRatio_AVG[2] + ",";
+                line += videoAVGSim + "," + videoSTDEVSim;
+                
+                //
+                record = line.split(",");
+                writer.writeNext(record);
+            }
+            
+            //Once we finish writing calculated values, we close the writer
+            writer.close();
+            
+            ////FINNISHED SAVING VIDEO RESULTS////
         }
         catch(FileNotFoundException e)
         {
@@ -519,6 +674,153 @@ public class PAD_Analysis
         
         System.out.println("DONE");
         
+    }
+    
+    private static Double transformRange(Double x)
+    {
+        Double value = 0d;
+        
+        x = (x - 1);
+        value = (x * 0.25);
+        value = (value - 1);
+        
+        return value;
+    }
+    
+    private static Double cosSimularity(Double[] a, Double[] b, boolean negVals)
+    {
+        Double cosSim = 0d;
+        Double tempDOT = 0d;
+        Double tempMag1 = 0d;
+        Double tempMag2 = 0d;
+        
+        //check that vectors are same size (same array length)?
+        
+        //DOT prouct between Video i test vector and expected vector
+        for(int i = 0; i < a.length; i++)
+        {
+            tempDOT += (a[i] * b[i]);
+        }
+
+        //Magnitude of Video i test vector
+        for(int i = 0; i < a.length; i++)
+        {
+            tempMag1 += (a[i] * a[i]);
+        }
+        tempMag1 = Math.sqrt(tempMag1);
+
+        //Magnitude of Video i expected vector
+        for(int i = 0; i < a.length; i++)
+        {
+            tempMag2 += (b[i] * b[i]);
+        }
+        tempMag2 = Math.sqrt(tempMag2);
+
+        //Cosine vector similarity between test and expected data
+        //Similarity is cos(THETA) given by A.B / ||A||*||B||
+        //We round cos(THETA) to avoid precision error in arc cos()
+        //(might change to BigDecimal)
+        cosSim = (tempDOT / (tempMag1 * tempMag2));
+        cosSim = (double) Math.round(cosSim * 100000d) / 100000d;
+
+        //Angular vector similarity of cosSim found above
+        //It is the normilized angle between vectors bounded by [0,1]
+        //Given by 1 - cos^-1(cosSim)/Pi if there ARE negitive values
+        //and by by 1 - (2 * cos^-1(cosSim))/Pi if there ARE NOT negitive values
+        if(negVals)
+        {
+            cosSim = 1 - (Math.acos(cosSim) / Math.PI);
+        }
+        else
+        {
+            cosSim = 1 - ((2 * Math.acos(cosSim)) / Math.PI);
+        }
+        
+        //We round to 5 decimal places (might change to BigDecimal)
+        cosSim = (double) Math.round(cosSim * 100000d) / 100000d;
+        
+        return cosSim;
+    }
+    
+    private static void saveTestResultsByTest()
+    {
+        ////
+    }
+    
+    private static void saveTestResultsByVideo()
+    {
+        ////
+    }
+    
+    private static void saveVideoResults()
+    {
+        ////
+    }
+    
+    private static ArrayList storeByVideo(Double[] testAVG, Double[] testSTDEV, Double simAVG, Double simSTDEV, Double[] ratioSTDEV)
+    {
+        //
+        ArrayList testResult = new ArrayList();
+
+        //
+        testResult.add(testAVG);
+        testResult.add(testSTDEV);
+        testResult.add(simAVG);
+        testResult.add(simSTDEV);
+        testResult.add(ratioSTDEV);
+
+        //
+        return testResult;
+    }
+    
+    private static Double[] findAverages(TreeMap<String,ArrayList> videoResult)
+    {
+        Double[] dataAVG, dataSTDEV, dataRatioSTDEV;
+        Double dataSimAVG, dataSimSTDEV;
+        
+        int testCount = videoResult.size();
+        Double[] averages = new Double[] {0d,0d,0d,0d,0d,0d,0d,0d,0d,0d,0d};
+        
+        //
+        Set set = videoResult.entrySet();
+        Iterator iterator = set.iterator();
+
+        //
+        while (iterator.hasNext()) {
+            //
+            Map.Entry resultEntry = (Map.Entry) iterator.next();
+
+            ArrayList data = (ArrayList)resultEntry.getValue();
+            
+            dataAVG = (Double[]) data.get(0);
+            dataSTDEV = (Double[]) data.get(1);
+            dataSimAVG = (Double) data.get(2);
+            dataSimSTDEV = (Double) data.get(3);
+            dataRatioSTDEV = (Double[]) data.get(4);
+            
+            averages[0] += dataAVG[0];
+            averages[1] += dataAVG[1];
+            averages[2] += dataAVG[2];
+            
+            averages[3] += dataSTDEV[0];
+            averages[4] += dataSTDEV[1];
+            averages[5] += dataSTDEV[2];
+            
+            averages[6] += dataSimAVG;
+            
+            averages[7] += dataSimSTDEV;
+            
+            averages[8] += dataRatioSTDEV[0];
+            averages[9] += dataRatioSTDEV[1];
+            averages[10] += dataRatioSTDEV[2];
+        }
+        
+        for(int i = 0; i < averages.length; i++)
+        {
+            averages[i] = (averages[i] / testCount);
+        }
+        
+        return averages;
     }
     
 }
