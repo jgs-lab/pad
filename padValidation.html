@@ -90,24 +90,24 @@
                     currVideo = $(".videoSelect").val(); // this will be used as the key for the videoData object. 
                     $("#content").append(emotionalVids[$(".videoSelect").val()]);
                      stop = true; // let the ajax call happen on intervals
-                    var ajaxInterval = setInterval(function(){
-                        $.ajax({
-                            url: "interface.php", // calling the interface I made
-                            data: {
-                                action: "false"
-                            },
-                            type: "POST", // it is a GET 
-                            dataType: "json", // data getting back will be a json
-                            success: function(response){ // function with the response data
-                                //console.log(response);
-                                videoData[currVideo].push(response); // push the data onto the the current vido key on vidoData OBJ
-                                //console.log(videoData); //for debugging
-                                if(stop == false){ // if stop is set to false stop the interval repeating.
-                                    clearInterval(ajaxInterval);
-                                }
-                            }
-                        });
-                    }, 2000); // repeate the interval every 2 seconds
+                    // var ajaxInterval = setInterval(function(){
+                    //     $.ajax({
+                    //         url: "interface.php", // calling the interface I made
+                    //         data: {
+                    //             action: "false"
+                    //         },
+                    //         type: "POST", // it is a GET 
+                    //         dataType: "json", // data getting back will be a json
+                    //         success: function(response){ // function with the response data
+                    //             //console.log(response);
+                    //             videoData[currVideo].push(response); // push the data onto the the current vido key on vidoData OBJ
+                    //             //console.log(videoData); //for debugging
+                    //             if(stop == false){ // if stop is set to false stop the interval repeating.
+                    //                 clearInterval(ajaxInterval);
+                    //             }
+                    //         }
+                    //     });
+                    // }, 2000); // repeate the interval every 2 seconds
                 }
 			});
 
