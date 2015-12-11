@@ -1,16 +1,34 @@
+#!c:\Perl64\bin\perl.exe
 use warnings;
 use strict;
 use Socket;
+use CGI qw(:standard);
+use JSON;
+use Data::Dumper; #for debugging. 
+
+my $json; #for holding data object
+my $time = $ARGV[0];
+my $name = $ARGV[1];
 
 # initialize host and port
-my $host = shift || 'localhost';
-my $port = shift || 7474;
+my $host = 'localhost';
+my $port = 7474;
 my $server = "localhost";  # Host IP running the server
 
-my $timestamp = localtime();
+my $timestamp = time(); #unix timestamp
+my @returnArray = (); # thereturn array for the data
 
 $SIG{ALRM} = sub { 
-	print "done";
+	#$timestamp = time();
+	#$json->{"root"} = \@returnArray;
+	#my $json_text = to_json($json);
+	#print $json_text;
+	open (MYFILE, '>>video'.$name.'.csv'); 
+	for my $item (@returnArray){
+		print MYFILE "Vid $name,$item";
+	}
+	close(MYFILE);
+	print("done");
 	die "timeout"; 
 };
 
@@ -22,12 +40,11 @@ connect( SOCKET, pack_sockaddr_in($port, inet_aton($server)))
 
 my $line;
 eval {
-	alarm(3);
+	alarm($time);
 	while (1) {
 			$line = <SOCKET>;
-			$timestamp = localtime();
-			print "$timestamp ";
-	        print "$line\n";
+			$timestamp = time();
+			push(@returnArray, $timestamp .", ". $line);
 	        sleep(.1);
 	}
 	alarm(0);
