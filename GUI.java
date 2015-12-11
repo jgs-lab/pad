@@ -1,4 +1,5 @@
 
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -58,7 +59,7 @@ public class G2 extends JFrame {
 		JButton btnNewButton = new JButton("Run Analysis");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				padAnalysis.analyze(textField.getText(), textField_1.getText());
+				PadAnalysis2.analyze(textField.getText(),textField_1.getText());
 			}
 			
 		});
@@ -70,19 +71,36 @@ public class G2 extends JFrame {
 				JFileChooser file = new JFileChooser();
 				int returnVal = file.showOpenDialog(getParent());
 				String fileName = file.getSelectedFile().getName();
+				fileName = file.getSelectedFile().getAbsolutePath();
 				textField.setText(fileName);
 				
 			}
 		});
 		
-		JButton btnNewButton_2 = new JButton("Output Destination");
+		JButton btnNewButton_2 = new JButton("Output File");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser file = new JFileChooser();
+				/*JFileChooser file = new JFileChooser();
 				int returnVal = file.showOpenDialog(getParent());
-				String fileName = file.getSelectedFile().getName();
+				//String fileName = file.getSelectedFile().getName();
+				file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				file.getCurrentDirectory();
+				String fileName = file.getCurrentDirectory().toString();
 				textField_1.setText(fileName);
+				*/
+				
+				JFileChooser chooser = new JFileChooser();
+
+			    chooser.setCurrentDirectory(new java.io.File("."));
+			    chooser.setDialogTitle("choosertitle");
+			    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			    chooser.setAcceptAllFileFilterUsed(false);
+				int returnVal = chooser.showOpenDialog(getParent());
+				textField_1.setText(chooser.getSelectedFile().getAbsolutePath());
+				
+
 			}
+			
 		});
 		
 		JLabel lblPadAnalysisTool = new JLabel("PAD Analysis Tool");
